@@ -24,9 +24,20 @@ public class Main {
 		//create clients
 		Client testClient = new Client(testDoc);
 		Client test2Clients = new Client(testDependency);
-
+		
+		new Thread(testOffice).start();
+		new Thread(test2Offices).start();
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		new Thread(testClient).start();
 		new Thread(test2Clients).start();
+
 	}
 
 }

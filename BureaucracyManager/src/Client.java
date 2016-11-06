@@ -6,14 +6,17 @@ public class Client implements Runnable {
 	private static int clientCounter = 0;
 	private int clientNr;
 	private final Document doc;
+	private Document crtReqDoc;
 	private Map<Document, Boolean> intermediaryDocs = new HashMap<Document, Boolean>();
 
 	public Client(Document doc) {
 		this.clientNr = ++clientCounter;
 		this.doc = doc;
+		insertIntermediaryDocs(doc);
 	}
 
 	private void insertIntermediaryDocs(Document doc) {
+
 		List<Document> dependencies = this.doc.getDependencies();
 
 		for (Document d : dependencies) {
@@ -21,12 +24,16 @@ public class Client implements Runnable {
 		}
 	}
 
-	public void acquiredDoc(Document d) {
-		intermediaryDocs.replace(d, true);
-	}
-	
-	public boolean hasDocs(List<Document> docs){
+	public boolean hasPrerequisiteDocs(List<Document> docs) {
 		return intermediaryDocs.keySet().containsAll(docs);
+	}
+
+	public Document requireDoc() {
+		return crtReqDoc;
+	}
+
+	public synchronized void acquireDoc(Document d) {
+		intermediaryDocs.replace(d, true);
 	}
 
 	@Override
@@ -36,20 +43,8 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		Office o = BureaucraticSystem.getOfficeForDoc(doc);
-
 		Main.threadMessage("I need document " + doc);
-		insertIntermediaryDocs(doc);
-
-		Main.threadMessage("Document dependencies: " + intermediaryDocs.keySet());
-		for (Document d : intermediaryDocs.keySet()) {
-			Office io = BureaucraticSystem.getOfficeForDoc(d);
-			io.issueDoc(this, d);
-		}
-
-		o.issueDoc(this, doc);
-
-		Main.threadMessage("thx,bye");
+		Main.threadMessage("Document prerequisites: " + intermediaryDocs.keySet());
 	}
 
 }
