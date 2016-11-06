@@ -47,15 +47,11 @@ public class Office implements Runnable {
 		Main.threadMessage(this + " running");
 
 		while (true) {
-			System.out.println(this + "queue: " + queue);
+			System.out.println(queue);
 
-			Client c = queue.poll();
-			// for (Client c : queue) {
-			if (c != null) {
-				Document doc = c.requireDoc();
-				synchronized (doc) {
-					issueDoc(c, doc);
-					doc.notifyAll();
+			for (Client c : queue) {
+				synchronized(c) {
+					
 				}
 			}
 

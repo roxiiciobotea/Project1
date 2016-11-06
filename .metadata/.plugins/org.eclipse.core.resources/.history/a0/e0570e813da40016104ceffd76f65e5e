@@ -16,8 +16,7 @@ public class Client implements Runnable {
 	}
 
 	private void insertIntermediaryDocs(Document doc) {
-		intermediaryDocs.put(doc, false);
-		
+
 		List<Document> dependencies = this.doc.getDependencies();
 
 		for (Document d : dependencies) {
@@ -44,20 +43,15 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		Main.threadMessage(this + ": I need document " + doc);
+		Main.threadMessage("I need document " + doc);
 		Main.threadMessage("Document prerequisites: " + intermediaryDocs.keySet());
 
 		for (Document d : intermediaryDocs.keySet()) {
 			crtReqDoc = d;
 			Office o = BureaucraticSystem.getOfficeForDoc(d);
 			o.addClient(this);
-			synchronized (crtReqDoc) {
-				try {
-					crtReqDoc.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			synchronized (doc) {
+				
 			}
 		}
 	}

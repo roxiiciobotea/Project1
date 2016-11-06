@@ -45,26 +45,12 @@ public class Office implements Runnable {
 	@Override
 	public void run() {
 		Main.threadMessage(this + " running");
-
-		while (true) {
-			System.out.println(this + "queue: " + queue);
-
-			Client c = queue.poll();
-			// for (Client c : queue) {
-			if (c != null) {
-				Document doc = c.requireDoc();
-				synchronized (doc) {
-					issueDoc(c, doc);
-					doc.notifyAll();
-				}
-			}
-
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			//System.out.println(this + " thread was interrupted.");
 		}
+		System.out.println(queue);
+
 	}
 }
