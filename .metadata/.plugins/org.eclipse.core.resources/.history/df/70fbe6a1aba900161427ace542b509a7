@@ -1,0 +1,18 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public final class BureaucraticSystem {
+	private static final List<Office> offices = new ArrayList<>();
+
+	public BureaucraticSystem(List<Office> offices) {
+		BureaucraticSystem.offices.addAll(offices);
+	}
+
+	public static Office getOfficeForDoc(Document d) {
+		for (Office o : offices) {
+			if (o.issues(d))
+				return o;
+		}
+		return null;
+	}
+}

@@ -1,0 +1,8 @@
+
+public class DirectDocument implements Document {
+	private final String name;
+
+	public IndirectDocument(String docName) {
+		this.name=docName;
+	}
+}

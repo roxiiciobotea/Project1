@@ -1,0 +1,29 @@
+package Test;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ReadTest {
+	public static void main(String[] args) {
+		String documents;
+		String offices;
+
+		try {
+			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
+
+			documents = b.readLine();
+			offices = b.readLine();
+
+			b.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(documents + '\n' + offices);
+
+	}
+}

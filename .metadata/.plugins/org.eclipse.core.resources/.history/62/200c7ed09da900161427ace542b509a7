@@ -1,0 +1,55 @@
+import java.util.Arrays;
+
+public class Main {
+
+/*	public static void threadMessage(String message) {
+		String threadName = Thread.currentThread().getName();
+		System.out.format(threadName + ": " + message + "\n");
+	}*/
+
+	public static void main(String[] args) {
+		System.out.println("Setting up the system...");
+
+		// Lvl3 docs
+		Document workCertificate = new Document("Work Certificate");
+
+		// Lvl2 docs
+		Document incomeCertificate = new Document("Income Certificate", Arrays.asList(workCertificate));
+		Document houseContract = new Document("House Contract");
+
+		// Lvl1 docs
+		Document endDoc1 = new Document("End Doc 1", Arrays.asList(incomeCertificate, houseContract));
+
+		// offices
+		Office workForceOffice = new Office("Work Force Office", Arrays.asList(workCertificate));
+		Office financialOffice = new Office("Financial Office", Arrays.asList(incomeCertificate));
+		Office assetsOffice = new Office("Assets Office", Arrays.asList(houseContract));
+		Office endOffice1 = new Office("End Office 1", Arrays.asList(endDoc1));
+
+		BureaucraticSystem syst = new BureaucraticSystem(
+				Arrays.asList(workForceOffice, financialOffice, assetsOffice, endOffice1));
+
+		// clients
+		Client c1 = new Client(workCertificate);
+		Client c2 = new Client(incomeCertificate);
+		Client c3 = new Client(houseContract);
+		Client c4 = new Client(endDoc1);
+
+		new Thread(workForceOffice).start();
+		new Thread(financialOffice).start();
+		new Thread(assetsOffice).start();
+		new Thread(endOffice1).start();
+
+		try {
+			Thread.sleep(1000 * 5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+
+		new Thread(c1).start();
+		new Thread(c2).start();
+		new Thread(c3).start();
+		new Thread(c4).start();
+	}
+}

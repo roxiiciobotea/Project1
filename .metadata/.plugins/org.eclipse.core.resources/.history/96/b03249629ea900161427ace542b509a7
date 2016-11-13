@@ -1,0 +1,37 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Document {
+	private final String name;
+	private final List<EndDocument> dependencies = new ArrayList<>();
+
+	public Document(String docName) {
+		this.name=docName;
+	}
+
+	public Document(String docName, List<EndDocument> dependencies) {
+		this.name = docName;
+		this.dependencies.addAll(dependencies);
+	}
+	
+	private List<EndDocument> allDependencies() {
+		List<EndDocument> allDep = new ArrayList<>();
+		
+		for(EndDocument d:dependencies) {
+			allDep.addAll(d.getDependencies());
+			allDep.add(d);
+
+		}
+		
+		return allDep;
+	}
+
+	public List<EndDocument> getDependencies() {
+		return this.allDependencies();
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}

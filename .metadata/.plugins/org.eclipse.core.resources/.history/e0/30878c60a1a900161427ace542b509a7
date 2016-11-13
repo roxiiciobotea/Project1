@@ -1,0 +1,13 @@
+
+public class DirectDocument implements Document {
+	private final String name;
+
+	public DirectDocument(String docName) {
+		this.name=docName;
+	}
+	
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}

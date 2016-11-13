@@ -1,0 +1,43 @@
+package BureaucracyManager;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Document {
+	private final String name;
+	private final List<Document> dependencies = new ArrayList<>();
+
+	public Document(String docName) {
+		this.name=docName;
+	}
+
+	public Document(String docName, List<Document> dependencies) {
+		this.name = docName;
+		this.dependencies.addAll(dependencies);
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	private List<Document> allDependencies() {
+		List<Document> allDep = new ArrayList<>();
+		
+		for(Document d : dependencies) {
+			allDep.addAll(d.getDependencies());
+			allDep.add(d);
+		}
+		
+		return allDep;
+	}
+
+	public List<Document> getDependencies() {
+		System.out.println("In doc" + dependencies);
+
+		return this.allDependencies();
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}

@@ -1,0 +1,70 @@
+package Test;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import BureaucracyManager.*;
+
+public class ReadTest {
+	static List<Document> allDocuments = new ArrayList<>();
+
+	private static Document getDocForName(String name) {
+		for (Document d : allDocuments) {
+			if (d.getName() == name)
+				return d;
+		}
+		return new Document(name);
+	}
+
+	private static List<Document> createDependendciesList(String[] list) {
+		List<Document> dependencies = new ArrayList<>();
+		for (String s : list) {
+			dependencies.add(getDocForName(s));
+		}
+		return dependencies;
+	}
+
+	public static void processDocuments(String documents) {
+		String[] docs = documents.split("; ");
+
+		for (String s : docs) {
+			if (s.matches(".*[(].*[)]")) {
+				String docName = s.substring(0, s.indexOf('('));
+
+				String[] docDependencies = s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(", ");
+
+				allDocuments.add(new Document(docName, createDependendciesList(docDependencies)));
+			}
+			else
+				allDocuments.add(new Document(s));
+		}
+	}
+
+	public static void processOffices(String offices) {
+
+	}
+
+	public static void main(String[] args) {
+		try {
+			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
+
+			String documents = b.readLine();
+			processDocuments(documents);
+			String offices = b.readLine();
+
+			b.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(allDocuments);
+
+	}
+}

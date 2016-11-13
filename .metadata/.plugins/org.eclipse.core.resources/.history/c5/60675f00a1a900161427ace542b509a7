@@ -1,0 +1,33 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class IndirectDocument implements Document {
+	private final String name;
+	private final List<Document> dependencies = new ArrayList<>();
+
+	public IndirectDocument(String docName, List<Document> dependencies) {
+		this.name = docName;
+		this.dependencies.addAll(dependencies);
+	}
+	
+	private List<Document> allDependencies() {
+		List<Document> allDep = new ArrayList<>();
+		
+		for(IndirectDocument d: dependencies) {
+			allDep.addAll(d.getDependencies());
+			allDep.add(d);
+
+		}
+		
+		return allDep;
+	}
+
+	public List<Document> getDependencies() {
+		return this.allDependencies();
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}

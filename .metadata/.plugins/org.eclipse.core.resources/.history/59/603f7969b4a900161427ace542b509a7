@@ -1,0 +1,39 @@
+package BureaucracyManager;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public final class BureaucraticSystem {
+	static List<Document> allDocuments = new ArrayList<>();
+	static List<Office> allOffices = new ArrayList<>();
+
+	public BureaucraticSystem(String configFile) {
+		try {
+			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
+
+			String documents = b.readLine();
+			processDocuments(documents);
+			String offices = b.readLine();
+			processOffices(offices);
+
+			b.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+
+	public static Office getOfficeForDoc(Document d) {
+		for (Office o : allOffices) {
+			if (o.issues(d))
+				return o;
+		}
+		return null;
+	}
+}

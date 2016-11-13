@@ -9,10 +9,11 @@ The offices feature queues. DONE
 
 TODO: some offices have more than one counter for working with the public. 
 
-TODO: At any time, a situation may occur where any of the counters be temporarily closed because of important coffee breaks. 
+At any time, a situation may occur where any of the counters be temporarily closed because of important coffee breaks.  DONE
 
-TODO: Configuration information containing at least the following elements:
+Configuration information containing at least the following elements:
 - Offices and documents issued by them
 - Dependencies between documents (which documents are needed to receive another document)
+DONE
 
 Customers will be simulated by threads. DONE

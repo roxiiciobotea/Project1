@@ -1,0 +1,91 @@
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class Office implements Runnable {
+	private final String name;
+	private final List<Document> issuedDocs;
+	private final BlockingQueue<Client> queue = new LinkedBlockingQueue<Client>();
+
+	// for handling coffee breaks
+	private final long coffeeBreakDuration = 5000;
+	private final Random ro = new Random();
+	private int coffeeTime;
+	private long startTime;
+	private long crtTime;
+
+	public Office(String officeName, List<Document> issuedDocs) {
+		this.name = officeName;
+		this.issuedDocs = issuedDocs;
+	}
+
+	public synchronized void addClient(Client c) {
+		queue.add(c);
+	}
+
+	public boolean issues(Document d) {
+		if (issuedDocs.contains(d))
+			return true;
+		return false;
+	}
+
+	private void issueDoc(Client c, Document d) {
+		if (c.hasPrerequisiteDocs(d.getDependencies())) {
+			if (issuedDocs.contains(d)) {
+				c.acquireDoc(d);
+				System.out.println(this + " issued " + d + " for client " + c);
+			} else
+				System.out.println(this + ": WRONG OFFICE FOR " + d + " !!!"); // technically
+																				// impossible
+		} else
+			System.out.println(this + ": " + c + " does not have the necessary documents!"); // technically
+																								// impossible
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+
+	@Override
+	public void run() {
+		System.out.println(this + " is running!");
+		startTime = System.currentTimeMillis();
+		coffeeTime = ro.nextInt(60) * 1000;
+
+		while (true) {
+			crtTime = System.currentTimeMillis();
+			if ((crtTime - startTime) > coffeeTime)
+				try {
+					System.out.println(this + ": COFFEE BREAK!");
+					Thread.sleep(coffeeBreakDuration);
+					System.out.println(this + ": BACK TO WORK...");
+					
+					startTime = System.currentTimeMillis();
+					coffeeTime = ro.nextInt(60) * 1000;
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+
+			if (!queue.isEmpty())
+				System.out.println(this.name + " queue: " + queue);
+
+			Client c = queue.poll();
+			if (c != null) {
+				IndirectDocument doc = c.requireDoc();
+				synchronized (doc) {
+					issueDoc(c, doc);
+					doc.notify();
+				}
+			}
+
+			// waiting time between clients
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

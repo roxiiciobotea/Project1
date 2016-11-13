@@ -1,0 +1,21 @@
+1479040840058	Rename type 'Document'
+1479040853484	Rename type 'EndDocument'
+1479040869266	Delete element
+1479040913591	Rename type 'Document'
+1479040994170	Delete element
+1479042116784	Delete element
+1479042125635	Delete element
+1479042141727	Rename type 'IndirectDocument'
+1479042261749	Delete element
+1479046405428	Delete element
+1479046423624	Delete element
+1479046442187	Delete element
+1479046457798	Delete element
+1479046508628	Copy compilation unit
+1479046513697	Copy compilation unit
+1479046520577	Copy compilation unit
+1479046523086	Copy compilation unit
+1479046525705	Copy compilation unit
+1479046530246	Delete element
+1479049809986	Rename method 'createDependendciesList'
+1479050090586	Rename local variable 'dependencies'

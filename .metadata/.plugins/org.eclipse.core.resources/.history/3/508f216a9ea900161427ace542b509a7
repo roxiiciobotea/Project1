@@ -1,0 +1,63 @@
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Client implements Runnable {
+	private static int clientCounter = 0;
+	private int clientNr;
+	private final EndDocument doc;
+	private EndDocument crtReqDoc;
+	private Map<EndDocument, Boolean> intermediaryDocs = new LinkedHashMap<EndDocument, Boolean>();
+
+	public Client(EndDocument doc) {
+		this.clientNr = ++clientCounter;
+		this.doc = doc;
+		insertIntermediaryDocs(doc);
+	}
+
+	private void insertIntermediaryDocs(EndDocument doc) {
+		List<EndDocument> dependencies = this.doc.getDependencies();
+
+		for (EndDocument d : dependencies) {
+			intermediaryDocs.put(d, false);
+		}
+		
+		intermediaryDocs.put(doc, false);
+	}
+
+	public boolean hasPrerequisiteDocs(List<EndDocument> docs) {
+		return intermediaryDocs.keySet().containsAll(docs);
+	}
+
+	public EndDocument requireDoc() {
+		return crtReqDoc;
+	}
+
+	public void acquireDoc(EndDocument d) {
+		intermediaryDocs.replace(d, true);
+	}
+
+	@Override
+	public String toString() {
+		return "Client " + clientNr;
+	}
+
+	@Override
+	public void run() {
+		System.out.println(this + ": I want to get " + doc + ". All documents needed: " + intermediaryDocs.keySet());
+
+		for (EndDocument d : intermediaryDocs.keySet()) {
+			crtReqDoc = d;
+			Office o = BureaucraticSystem.getOfficeForDoc(d);
+			o.addClient(this);
+			synchronized (crtReqDoc) {
+				try {
+					crtReqDoc.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}

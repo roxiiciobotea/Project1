@@ -1,0 +1,21 @@
+School Certificate
+Work Certificate
+Medical Insurance
+House Contract
+Car Contract
+
+Income Certificate(Work Certificate)
+Medical Certificate(Medical Insurance)
+Car Insurance(Car Contract)
+House Insurance(House Contract)
+
+End Document 1(Income Certificate, House Contract)
+End Document 2(School Certificate, Medical Certificate)
+End Document 3(Work Certificate, House Contract)
+End Document 4(Medical Insurance, House Contract)
+End Document 5(Income Certificate, Medical Certificate)
+End Document 6(School Certificate, Work Certificate)
+End Document 7(Car Insurance, House Insurance)
+End Document 8(Work Certificate, Medical Insurance, House Contract)
+End Document 9(Income Certificate)
+End Document 10(House Contract, Income Certificate)
