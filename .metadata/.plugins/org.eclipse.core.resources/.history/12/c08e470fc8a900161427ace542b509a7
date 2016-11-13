@@ -42,7 +42,7 @@ public class Office implements Runnable {
 	private void issueDoc(Client c, Document d) {
 		if (issuedDocs.contains(d)) {
 			if (d instanceof Document && !checkDependencies(c, (Document) d)) {
-				System.out.println(this + ": " + c + " does not have the necessary documents to acquire " + d + "!"); //shouldn't happen
+				System.out.println(this + ": " + c + " does not have the necessary documents to acquire " + d + "!");
 				return;
 			} else {
 				c.acquireDoc(d);

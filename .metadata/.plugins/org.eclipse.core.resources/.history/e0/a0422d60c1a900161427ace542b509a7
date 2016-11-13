@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public final class BureaucraticSystem {
 	private static List<Document> allDocuments = new LinkedList<>();
-	private static List<Document> allowedDocuments = new LinkedList<>();
+	private static List<Document> allowedDocs = new LinkedList<>();
 	private static List<Office> allOffices = new LinkedList<>();
 
 	public static Office getOfficeForDoc(Document d) {
@@ -24,18 +23,10 @@ public final class BureaucraticSystem {
 
 	private static Document getDocForName(String name) {
 		for (Document d : allDocuments) {
-			if (d.getDocName().equals(name))
+			if (d.getName().equals(name))
 				return d;
 		}
 		return null;
-	}
-
-	private static Document getRandomDocument() {
-		Random ro = new Random();
-		int rand = ro.nextInt(allowedDocuments.size() - 1);
-		
-		return allowedDocuments.get(rand);
-
 	}
 
 	private static List<Document> createDocsList(String[] list) {
@@ -56,9 +47,7 @@ public final class BureaucraticSystem {
 				String[] docDependencies = s.substring(s.indexOf('(') + 1, s.indexOf(')')).split(", ");
 				List<Document> dependencies = createDocsList(docDependencies);
 
-				Document d = new Document(docName, dependencies);
-				allDocuments.add(d);
-				allowedDocuments.add(d);
+				allDocuments.add(new Document(docName, dependencies));
 			} else
 				allDocuments.add(new Document(s));
 		}
@@ -77,12 +66,11 @@ public final class BureaucraticSystem {
 	}
 
 	public static void main(String[] args) {
-		//read docs & offices from config file
 		try {
 			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
 
 			processDocuments(b.readLine());
-
+			
 			processOffices(b.readLine());
 
 			b.close();
@@ -91,28 +79,39 @@ public final class BureaucraticSystem {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		//create clients
-		List<Client> clients = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
-			clients.add(new Client(getRandomDocument()));
+		
+/*		for(Office o : allOffices) {
+			System.out.println(o + " issues  :  " + o.getIssuedDocs());
 		}
+		
+		for(Document d : allDocuments) {
+			System.out.println(d + "  :  " + d.getDependencies());
+		}*/
+		
+		Client c1 = new Client(getDocForName("End Document 1"));
+		Client c2 = new Client(getDocForName("End Document 2"));
+		Client c3 = new Client(getDocForName("End Document 3"));
+		Client c4 = new Client(getDocForName("End Document 4"));
+		Client c5 = new Client(getDocForName("End Document 5"));
+		Client c6 = new Client(getDocForName("End Document 6"));
+		Client c7 = new Client(getDocForName("End Document 7"));
+		Client c8 = new Client(getDocForName("End Document 8"));
+		Client c9 = new Client(getDocForName("End Document 9"));
+		Client c10 = new Client(getDocForName("End Document 10"));
 
-		//start office threads
 		for (Office o : allOffices) {
 			new Thread(o).start();
 		}
 
-		//wait 5 sec to make sure all office threads are started
 		try {
-			Thread.sleep(5000 );
+			Thread.sleep(1000 * 5);
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//start client threads
-		for(Client c : clients) {
-			new Thread(c).start();
-		}
+
+		new Thread(c1).start();
+		new Thread(c2).start();
+		new Thread(c3).start();
 	}
 }

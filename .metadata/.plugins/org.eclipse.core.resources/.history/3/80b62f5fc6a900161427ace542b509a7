@@ -6,7 +6,6 @@ import java.util.Map;
 public class Client implements Runnable {
 	private static int clientCounter = 0;
 	private int clientNr;
-	
 	private final Document doc;
 	private Document crtReqDoc;
 	private Map<Document, Boolean> intermediaryDocs = new LinkedHashMap<Document, Boolean>();
@@ -14,10 +13,10 @@ public class Client implements Runnable {
 	public Client(Document doc) {
 		this.clientNr = ++clientCounter;
 		this.doc = doc;
-		getIntermediaryDocs(doc);
+		insertIntermediaryDocs(doc);
 	}
 
-	private void getIntermediaryDocs(Document doc) {
+	private void insertIntermediaryDocs(Document doc) {
 		List<Document> dependencies = doc.getDependencies();
 
 		for (Document d : dependencies) {

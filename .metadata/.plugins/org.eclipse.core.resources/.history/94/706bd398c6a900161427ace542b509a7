@@ -24,7 +24,7 @@ public final class BureaucraticSystem {
 
 	private static Document getDocForName(String name) {
 		for (Document d : allDocuments) {
-			if (d.getDocName().equals(name))
+			if (d.getName().equals(name))
 				return d;
 		}
 		return null;

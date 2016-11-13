@@ -24,18 +24,10 @@ public final class BureaucraticSystem {
 
 	private static Document getDocForName(String name) {
 		for (Document d : allDocuments) {
-			if (d.getDocName().equals(name))
+			if (d.getName().equals(name))
 				return d;
 		}
 		return null;
-	}
-
-	private static Document getRandomDocument() {
-		Random ro = new Random();
-		int rand = ro.nextInt(allowedDocuments.size() - 1);
-		
-		return allowedDocuments.get(rand);
-
 	}
 
 	private static List<Document> createDocsList(String[] list) {
@@ -76,8 +68,15 @@ public final class BureaucraticSystem {
 		}
 	}
 
+	private static Document getRandomDocument() {
+		Random ro = new Random();
+		int rand = ro.nextInt(allowedDocuments.size() - 1);
+		
+		return allowedDocuments.get(rand);
+
+	}
+
 	public static void main(String[] args) {
-		//read docs & offices from config file
 		try {
 			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
 
@@ -92,25 +91,31 @@ public final class BureaucraticSystem {
 			e.printStackTrace();
 		}
 
-		//create clients
+		/*
+		 * for(Office o : allOffices) { System.out.println(o + " issues  :  " +
+		 * o.getIssuedDocs()); }
+		 * 
+		 * for(Document d : allDocuments) { System.out.println(d + "  :  " +
+		 * d.getDependencies()); }
+		 */
+
 		List<Client> clients = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			clients.add(new Client(getRandomDocument()));
 		}
 
-		//start office threads
 		for (Office o : allOffices) {
 			new Thread(o).start();
 		}
 
-		//wait 5 sec to make sure all office threads are started
 		try {
-			Thread.sleep(5000 );
+			System.out.println("Waiting for clients...");
+			Thread.sleep(1000 * 5);
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//start client threads
 		for(Client c : clients) {
 			new Thread(c).start();
 		}

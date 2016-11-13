@@ -19,3 +19,9 @@
 1479046530246	Delete element
 1479049809986	Rename method 'createDependendciesList'
 1479050090586	Rename local variable 'dependencies'
+1479057832423	Delete element
+1479057838180	Delete element
+1479057842570	Delete element
+1479058013366	Rename method 'insertIntermediaryDocs'
+1479058111440	Rename method 'getName'
+1479058687338	Rename method 'allDependencies'

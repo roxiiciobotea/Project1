@@ -6,22 +6,20 @@ public class Document {
 	private final String name;
 	private final List<Document> dependencies = new ArrayList<>();
 
-	//for documents without dependencies
 	public Document(String docName) {
 		this.name=docName;
 	}
 
-	//for documents with dependencies
 	public Document(String docName, List<Document> dependencies) {
 		this.name = docName;
 		this.dependencies.addAll(dependencies);
 	}
 	
-	public String getDocName() {
+	public String getName() {
 		return this.name;
 	}
 	
-	private synchronized List<Document> getAllDependencies() {
+	private synchronized List<Document> allDependencies() {
 		List<Document> allDep = new ArrayList<>();
 		
 		for(Document d : dependencies) {
@@ -33,7 +31,7 @@ public class Document {
 	}
 
 	public synchronized List<Document> getDependencies() {
-		return this.getAllDependencies();
+		return this.allDependencies();
 	}
 
 	@Override

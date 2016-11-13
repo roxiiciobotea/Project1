@@ -21,7 +21,7 @@ public class Document {
 		return this.name;
 	}
 	
-	private synchronized List<Document> getAllDependencies() {
+	private synchronized List<Document> allDependencies() {
 		List<Document> allDep = new ArrayList<>();
 		
 		for(Document d : dependencies) {
@@ -33,7 +33,7 @@ public class Document {
 	}
 
 	public synchronized List<Document> getDependencies() {
-		return this.getAllDependencies();
+		return this.allDependencies();
 	}
 
 	@Override
