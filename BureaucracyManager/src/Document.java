@@ -2,25 +2,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Document {
-	private static int docsCounter = 0;
-	private int docNr;
+	private final String name;
 	private final List<Document> dependencies = new ArrayList<>();
 
-	public Document() {
-		this.docNr = ++docsCounter;
+	public Document(String docName) {
+		this.name=docName;
 	}
 
-	public Document(List<Document> dependencies) {
-		this.docNr = ++docsCounter;
+	public Document(String docName, List<Document> dependencies) {
+		this.name = docName;
 		this.dependencies.addAll(dependencies);
+	}
+	
+	private List<Document> allDependencies() {
+		List<Document> allDep = new ArrayList<>();
+		
+		for(Document d:dependencies) {
+			allDep.addAll(d.getDependencies());
+			allDep.add(d);
+
+		}
+		
+		return allDep;
 	}
 
 	public List<Document> getDependencies() {
-		return this.dependencies;
+		return this.allDependencies();
 	}
 
 	@Override
 	public String toString() {
-		return "Document " + docNr;
+		return this.name;
 	}
 }

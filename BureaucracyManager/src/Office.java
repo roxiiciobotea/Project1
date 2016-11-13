@@ -1,18 +1,16 @@
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Office implements Runnable {
-	private static int officeCounter = 0;
-	private int officeNr;
+	private final String name;
 	private final List<Document> issuedDocs;
 	private final BlockingQueue<Client> queue = new LinkedBlockingQueue<Client>();
 
 	// TODO make this a Runnable & let it handle clients
 
-	public Office(List<Document> issuedDocs) {
-		this.officeNr = ++officeCounter;
+	public Office(String officeName, List<Document> issuedDocs) {
+		this.name = officeName;
 		this.issuedDocs = issuedDocs;
 	}
 
@@ -30,7 +28,7 @@ public class Office implements Runnable {
 		if (c.hasPrerequisiteDocs(d.getDependencies())) {
 			if (issuedDocs.contains(d)) {
 				c.acquireDoc(d);
-				Main.threadMessage(this + " issued doc " + d + " for client " + c);
+				Main.threadMessage(this + " issued " + d + " for client " + c);
 			} else
 				Main.threadMessage("WRONG OFFICE !!!"); // impossible
 		} else
@@ -39,7 +37,7 @@ public class Office implements Runnable {
 
 	@Override
 	public String toString() {
-		return "Office " + officeNr;
+		return this.name;
 	}
 
 	@Override
@@ -47,22 +45,21 @@ public class Office implements Runnable {
 		Main.threadMessage(this + " running");
 
 		while (true) {
-			System.out.println(this + "queue: " + queue);
+			if(!queue.isEmpty())
+				System.out.println(this.name + " queue: " + queue);
 
 			Client c = queue.poll();
-			// for (Client c : queue) {
 			if (c != null) {
 				Document doc = c.requireDoc();
 				synchronized (doc) {
 					issueDoc(c, doc);
-					doc.notifyAll();
+					doc.notify();
 				}
 			}
 
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000*5);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

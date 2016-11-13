@@ -4,46 +4,51 @@ public class Main {
 
 	public static void threadMessage(String message) {
 		String threadName = Thread.currentThread().getName();
-		System.out.format("%s: %s%n", threadName, message);
+		System.out.format(threadName + ": " + message + "\n");
 	}
 
 	public static void main(String[] args) {
 		threadMessage("Setting up the system...");
 
-		//create documents with their dependencies
-		Document testDependency = new Document();
-		Document testDoc = new Document(Arrays.asList(testDependency));
-		
-		//create all offices
-		Office testOffice = new Office(Arrays.asList(testDoc));
-		Office test2Offices = new Office(Arrays.asList(testDependency));
-		
-		//add offices to the system
-		BureaucraticSystem testSyst = new BureaucraticSystem(Arrays.asList(testOffice,test2Offices));
-		
-		//create clients
-		Client testClient = new Client(testDoc);
-		Client test2Clients = new Client(testDependency);
-		
-		new Thread(testOffice).start();
-		new Thread(test2Offices).start();
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		new Thread(testClient).start();
-		new Thread(test2Clients).start();
+		// Lvl3 docs
+		Document workCertificate = new Document("Work Certificate");
+
+		// Lvl2 docs
+		Document incomeCertificate = new Document("Income Certificate", Arrays.asList(workCertificate));
+		Document houseContract = new Document("House Contract");
+
+		// Lvl1 docs
+		Document endDoc1 = new Document("End Doc 1", Arrays.asList(incomeCertificate, houseContract));
+
+		// offices
+		Office workForceOffice = new Office("Work Force Office", Arrays.asList(workCertificate));
+		Office financialOffice = new Office("Financial Office", Arrays.asList(incomeCertificate));
+		Office assetsOffice = new Office("Assets Office", Arrays.asList(houseContract));
+		Office endOffice1 = new Office("End Office 1", Arrays.asList(endDoc1));
+
+		BureaucraticSystem syst = new BureaucraticSystem(
+				Arrays.asList(workForceOffice, financialOffice, assetsOffice, endOffice1));
+
+		// clients
+		Client c1 = new Client(workCertificate);
+		Client c2 = new Client(incomeCertificate);
+		Client c3 = new Client(houseContract);
+		Client c4 = new Client(endDoc1);
+
+		new Thread(workForceOffice).start();
+		new Thread(financialOffice).start();
+		new Thread(assetsOffice).start();
+		new Thread(endOffice1).start();
 
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000 * 5);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		new Thread(c1).start();
+		new Thread(c2).start();
+		new Thread(c3).start();
+		new Thread(c4).start();
 	}
-
 }

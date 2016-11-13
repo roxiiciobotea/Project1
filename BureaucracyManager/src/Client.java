@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +7,7 @@ public class Client implements Runnable {
 	private int clientNr;
 	private final Document doc;
 	private Document crtReqDoc;
-	private Map<Document, Boolean> intermediaryDocs = new HashMap<Document, Boolean>();
+	private Map<Document, Boolean> intermediaryDocs = new LinkedHashMap<Document, Boolean>();
 
 	public Client(Document doc) {
 		this.clientNr = ++clientCounter;
@@ -16,13 +16,13 @@ public class Client implements Runnable {
 	}
 
 	private void insertIntermediaryDocs(Document doc) {
-		intermediaryDocs.put(doc, false);
-		
 		List<Document> dependencies = this.doc.getDependencies();
 
 		for (Document d : dependencies) {
 			intermediaryDocs.put(d, false);
 		}
+		
+		intermediaryDocs.put(doc, false);
 	}
 
 	public boolean hasPrerequisiteDocs(List<Document> docs) {
@@ -44,8 +44,8 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		Main.threadMessage(this + ": I need document " + doc);
-		Main.threadMessage("Document prerequisites: " + intermediaryDocs.keySet());
+		Main.threadMessage(this + ": I need " + doc);
+		Main.threadMessage("All documents needed: " + intermediaryDocs.keySet());
 
 		for (Document d : intermediaryDocs.keySet()) {
 			crtReqDoc = d;
@@ -55,7 +55,6 @@ public class Client implements Runnable {
 				try {
 					crtReqDoc.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

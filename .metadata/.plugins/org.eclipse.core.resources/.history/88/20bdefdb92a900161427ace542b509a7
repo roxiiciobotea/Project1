@@ -1,0 +1,75 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Client implements Runnable {
+	private static int clientCounter = 0;
+	private int clientNr;
+	private final Document doc;
+	private Document crtReqDoc;
+	private final List<Document> neededDocs = new ArrayList<Document>();
+	private final List<Document> acquiredDocs = new ArrayList<Document>();
+	private Map<Document, Boolean> intermediaryDocs = new HashMap<Document, Boolean>();
+
+	public Client(Document doc) {
+		this.clientNr = ++clientCounter;
+		this.doc = doc;
+		neededDocs.add(doc);
+		//intermediaryDocs.put(doc, false);
+		//insertIntermediaryDocs(doc);
+	}
+
+	private void insertIntermediaryDocs(Document doc) {
+		//intermediaryDocs.put(doc, false);
+		
+		List<Document> dependencies = this.doc.getDependencies();
+
+		//for (Document d : dependencies) {
+			//intermediaryDocs.put(d, false);
+		//}
+		
+		neededDocs.addAll(dependencies);
+	}
+
+	public boolean hasPrerequisiteDocs(List<Document> docs) {
+		//return intermediaryDocs.keySet().containsAll(docs);
+		return acquiredDocs.containsAll(docs);
+	}
+
+	public Document requireDoc() {
+		return crtReqDoc;
+	}
+
+	public synchronized void acquireDoc(Document d) {
+		//intermediaryDocs.replace(d, true);
+		neededDocs.remove(d);
+		acquiredDocs.add(d);
+	}
+
+	@Override
+	public String toString() {
+		return "Client " + clientNr;
+	}
+
+	@Override
+	public void run() {
+		Main.threadMessage(this + ": I need " + doc);
+		Main.threadMessage("All documents needed: " + intermediaryDocs.keySet());
+
+		for (Document d : intermediaryDocs.keySet()) {
+			crtReqDoc = d;
+			insertIntermediaryDocs(d);
+			Office o = BureaucraticSystem.getOfficeForDoc(d);
+			o.addClient(this);
+			synchronized (crtReqDoc) {
+				try {
+					crtReqDoc.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}

@@ -1,0 +1,25 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Document {
+	private final String name;
+	private final List<Document> dependencies = new ArrayList<>();
+
+	public Document(String docName) {
+		this.name=docName;
+	}
+
+	public Document(String docName, List<Document> dependencies) {
+		this.name = docName;
+		this.dependencies.addAll(dependencies);
+	}
+
+	public List<Document> getDependencies() {
+		return this.dependencies;
+	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
+}
