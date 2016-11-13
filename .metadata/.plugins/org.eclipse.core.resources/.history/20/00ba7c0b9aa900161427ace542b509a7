@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Office implements Runnable {
+	private boolean coffeeBreak = false;
 	private final String name;
 	private final List<Document> issuedDocs;
 	private final BlockingQueue<Client> queue = new LinkedBlockingQueue<Client>();
@@ -31,7 +32,7 @@ public class Office implements Runnable {
 				c.acquireDoc(d);
 				Main.threadMessage(this + " issued " + d + " for client " + c);
 			} else
-				Main.threadMessage("WRONG OFFICE !!!"); // technically impossible
+				Main.threadMessage("WRONG OFFICE !!!"); // impossible
 		} else
 			Main.threadMessage("Client does not have necessary documents!");
 	}
@@ -45,22 +46,18 @@ public class Office implements Runnable {
 	public void run() {
 		Main.threadMessage(this + " running");
 		Random ro = new Random();
-		int coffeeTime = ro.nextInt(10);
+		int coffeeTime = ro.nextInt(6);
 		long start = System.currentTimeMillis();
 		long crt;
 
 		while (true) {
 			crt = System.currentTimeMillis();
-			if((crt-start) > (coffeeTime*1000))
+			if((start-crt) > (coffeeTime*1000))
 				try {
-					System.out.println(this + ": COFFEE BREAK!");
 					Thread.sleep(5000);
-					System.out.println(this + ": BACK TO WORK...");
-					start = System.currentTimeMillis();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
-			
 			if (!queue.isEmpty())
 				System.out.println(this.name + " queue: " + queue);
 

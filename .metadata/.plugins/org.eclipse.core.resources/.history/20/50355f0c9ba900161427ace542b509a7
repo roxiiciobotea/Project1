@@ -31,7 +31,7 @@ public class Office implements Runnable {
 				c.acquireDoc(d);
 				Main.threadMessage(this + " issued " + d + " for client " + c);
 			} else
-				Main.threadMessage("WRONG OFFICE !!!"); // technically impossible
+				Main.threadMessage("WRONG OFFICE !!!"); // impossible
 		} else
 			Main.threadMessage("Client does not have necessary documents!");
 	}
