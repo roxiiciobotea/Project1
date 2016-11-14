@@ -12,8 +12,13 @@ import java.util.Random;
 public final class BureaucraticSystem {
 	private static List<Document> allDocuments = new LinkedList<>();
 	private static List<Document> allowedDocuments = new LinkedList<>();
+	// documents that the clients can ask for (the docs which have dependencies)
+
 	private static List<Office> allOffices = new LinkedList<>();
 
+	/*
+	 * returns the office that issues document d
+	 */
 	public static Office getOfficeForDoc(Document d) {
 		for (Office o : allOffices) {
 			if (o.issues(d))
@@ -22,6 +27,9 @@ public final class BureaucraticSystem {
 		return null;
 	}
 
+	/*
+	 * returns the document with the specified name
+	 */
 	private static Document getDocForName(String name) {
 		for (Document d : allDocuments) {
 			if (d.getDocName().equals(name))
@@ -30,14 +38,21 @@ public final class BureaucraticSystem {
 		return null;
 	}
 
+	/*
+	 * gets a random document from the list of available documents
+	 */
 	private static Document getRandomDocument() {
 		Random ro = new Random();
 		int rand = ro.nextInt(allowedDocuments.size() - 1);
-		
+
 		return allowedDocuments.get(rand);
 
 	}
 
+	/*
+	 * creates a list of documents from an array of strings representing the
+	 * document names
+	 */
 	private static List<Document> createDocsList(String[] list) {
 		List<Document> docs = new ArrayList<>();
 		for (String s : list) {
@@ -46,6 +61,9 @@ public final class BureaucraticSystem {
 		return docs;
 	}
 
+	/*
+	 * processes the string containing the documents (read from the config file)
+	 */
 	private static void processDocuments(String documents) {
 		String[] docs = documents.split("; ");
 
@@ -64,6 +82,9 @@ public final class BureaucraticSystem {
 		}
 	}
 
+	/*
+	 * processes the string containing the offices (read from the config file)
+	 */
 	private static void processOffices(String offices) {
 		String[] ofcs = offices.split("; ");
 
@@ -77,7 +98,7 @@ public final class BureaucraticSystem {
 	}
 
 	public static void main(String[] args) {
-		//read docs & offices from config file
+		// read docs & offices from config file
 		try {
 			BufferedReader b = new BufferedReader(new FileReader("src/BureaucracyManagerSetup.txt"));
 
@@ -92,26 +113,33 @@ public final class BureaucraticSystem {
 			e.printStackTrace();
 		}
 
-		//create clients
+		// create clients
 		List<Client> clients = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			clients.add(new Client(getRandomDocument()));
 		}
 
-		//start office threads
+		// start office threads
 		for (Office o : allOffices) {
 			new Thread(o).start();
 		}
 
-		//wait 5 sec to make sure all office threads are started
-		try {
-			Thread.sleep(5000 );
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		/*
+		 * main thread does not move on until all office threads have been
+		 * started
+		 */
+		while (true) {
+			boolean ok = true;
+			for (Office o : allOffices) {
+				if (!o.isRunning())
+					ok = false;
+			}
+			if (ok)
+				break;
 		}
-		
-		//start client threads
-		for(Client c : clients) {
+
+		// start client threads
+		for (Client c : clients) {
 			new Thread(c).start();
 		}
 	}
